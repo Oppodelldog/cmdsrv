@@ -1,4 +1,4 @@
 # cmdsrv
 
 
-helps creating json-rpc sever and corresponsing cli client
+helps to create json-rpc sever and corresponding cli client

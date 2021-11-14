@@ -7,12 +7,12 @@ import (
 	"errors"
 	"flag"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"net/http"
 	"os"
 	"reflect"
 )
-
 const url = "{{.Url}}"
 const (
 	statusOK           = 0
@@ -112,6 +112,8 @@ func post(method string, data interface{}) {
 		os.Exit(statusTransportErr)
 	}
 
+	defer mustClose(resp.Body)
+
 	if resp.StatusCode != 200 {
 		var err = errors.New("unexpected status code")
 		stdErrf("TransportErr HTTP-STATUS %v: %s", resp.StatusCode, err)
@@ -169,5 +171,12 @@ func stdout(msg interface{}) {
 	_, err := fmt.Fprintln(os.Stdout, msg)
 	if err != nil {
 		panic(fmt.Sprintf("cannot write to stdout: %v", err))
+	}
+}
+
+func mustClose(closer io.Closer) {
+	var err = closer.Close()
+	if err != nil {
+		panic(fmt.Sprintf("error closing http response stream: %v", err))
 	}
 }

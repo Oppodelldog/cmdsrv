@@ -41,7 +41,7 @@ func main(){
         err := flags{{$idx}}.Parse(os.Args[2:])
         if err!=nil {
             if errors.Is(err,flag.ErrHelp){
-                flags0.PrintDefaults()
+                flags{{$idx}}.PrintDefaults()
                 os.Exit(statusInputErr)
             }
             stdErrf("bad input: %v", err)

@@ -24,14 +24,16 @@ const mainFile = "main.go"
 const mainTemplate = "main.go.tpl"
 
 func SourceCode(targetFolder, url string, interactors []usecase.Interactor) error {
+	mustMkDir(targetFolder)
+
 	var def = ApiDefinition(interactors)
 	var t = mustTemplate(mainTemplate)
 	var mainFilePath = path.Join(targetFolder, mainFile)
-	var mailFile = mustCreate(mainFilePath)
+	var mainFile = mustCreate(mainFilePath)
 
-	defer mustClose(mailFile)
+	defer mustClose(mainFile)
 
-	mustExecute(t, mailFile, Data{
+	mustExecute(t, mainFile, Data{
 		Def: def,
 		Url: url,
 	})
@@ -51,6 +53,12 @@ func mustTemplate(name string) *template.Template {
 	}}).ParseFS(templates, name))
 }
 
+func mustMkDir(path string) {
+	var err = os.MkdirAll(path, 0755)
+	if err != nil {
+		panic(err)
+	}
+}
 func mustCreate(mainFilePath string) *os.File {
 	var f, err = os.OpenFile(mainFilePath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0655)
 	if err != nil {

@@ -52,7 +52,7 @@ func mustTemplate(name string) *template.Template {
 }
 
 func mustCreate(mainFilePath string) *os.File {
-	var f, err = os.Create(mainFilePath)
+	var f, err = os.OpenFile(mainFilePath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0655)
 	if err != nil {
 		panic(err)
 	}
